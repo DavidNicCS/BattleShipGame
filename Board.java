@@ -9,6 +9,7 @@ public class Board {
 	private Cell[][] board;
 	private int rows;
 	private int cols;
+	private String name;
 	private	 ArrayList<Ship> shipClass = new ArrayList<Ship>();
 
 	public Board(int rows, int cols) {
@@ -20,7 +21,7 @@ public class Board {
 		shipClass.add(new Ship("Cruiser", 3));
 		shipClass.add(new Ship("Destroyer", 2));
 		shipClass.add(new Ship("Submarine", 3));
-
+		name = null;
 		board = new Cell[rows][cols];
 
 		for (int i = 0; i < rows; i++) {
@@ -31,6 +32,24 @@ public class Board {
 	}
 	public ArrayList<Ship> getShipList(){
 		return shipClass;
+	}
+	
+	public int getNumberSunk(){
+		int sunk = 0;
+		for (Ship a: shipClass){
+			if(a.getSunk()){
+				sunk += 1;
+			}
+		}
+		return sunk;
+	}
+	
+	public String getBoardName(){
+		return name;
+	}
+	
+	public void setBoardName(String value){
+		name = value;
 	}
 
 	public void addShip(Scanner in) {
@@ -196,15 +215,18 @@ public class Board {
 		return orientation;
 	}
 	
-	public Ship getBoat(Scanner in){//how to get it specific to a board if the method is in the Board class?
+	public Ship getBoat(Scanner in){
 		/*ArrayList<Ship> shipClass = new ArrayList<Ship>();
 		shipClass.add(new Ship("Aircraft Carrier",5));
 		shipClass.add(new Ship("Battleship", 4));
 		shipClass.add(new Ship("Cruiser", 3));
 		shipClass.add(new Ship("Destroyer", 2));
 		shipClass.add(new Ship("Submarine", 3));*/
-		System.out.printf("Please enter the class of ship:", shipClass.toString());
-		
+		System.out.print("Please enter the class of ship: ");
+		for(Ship a: shipClass){
+			System.out.printf(a.toString());
+		}
+		System.out.print("\n");
 		boolean successful = false;
 		while (!successful) {
 			String ship = in.next();
@@ -214,7 +236,7 @@ public class Board {
 					successful = true;
 					return a;
 				} else {
-					System.out.printf("Please enter the class of ship:", shipClass.toString(), "\n");
+					System.out.printf("Please enter the class of ship: ", shipClass.toString(), "\n");
 					System.out.println("This code is case-sensitive");
 				}
 			}
@@ -225,6 +247,18 @@ public class Board {
 	public Cell getCell(int x, int y){
 		return board[x][y];
 	}
+	
+	public void display(){
+		System.out.println("BOARD");
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				System.out.printf("%s ", board[i][j]);
+			}
+			System.out.println();
+		}
+		
+	}
+	
 	/*public String getShip(Scanner in) {
 		System.out.println(
 				"Please enter the class of ship (Aircraft Carrier, Battleship, Cruiser, Destroyer, Submarine):");

@@ -4,16 +4,18 @@ package ting.nicholas;
 	public class Cell {
 		private boolean filled;
 		private boolean visited;
-		private boolean bombard;
 		private boolean sunk;
+		private boolean hit;
+		private boolean miss;
 		private Ship occupier;
 		
 		public Cell() {
 			visited = false;
 			filled = false;
-			bombard = false;
 			sunk = false;
 			occupier = null;
+			hit = false;
+			miss = false;
 		}
 		
 		public void setVisited(boolean value){
@@ -32,23 +34,15 @@ package ting.nicholas;
 			return filled;
 		}
 		
-		public void setBombard(boolean value){
-			bombard = value;
-		}
-		
-		public boolean getBombard(){
-			return bombard;
-		}
 		
 		public void setSunk(boolean value){
 			sunk = value;
 		}
 		
-		public void getSunk(){
-			
+		public boolean getSunk(){
+			return sunk;
 		}
 		
-			
 		public void setOccupier(Ship value){
 			occupier = value;
 		}
@@ -56,5 +50,33 @@ package ting.nicholas;
 		public Ship getOccupier(){
 			return occupier;
 		}
+		
+		public void setHit(boolean value){
+			hit = value;
+		}
+		
+		public void setMiss(boolean value){
+			miss = value;
+		}
+		
+		public String toString(){
+			if(!filled){
+				return "~";
+			}
+			if(filled){
+				return "+";
+			}
+			if(hit){
+				return "*";
+			}
+			if(miss){
+				return "#"; 
+			}
+			if(sunk){
+				return "!";
+			}
+			return null;
+		}
+		
 	}
 

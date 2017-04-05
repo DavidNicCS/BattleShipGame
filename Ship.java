@@ -1,16 +1,16 @@
 package ting.nicholas;
 
 public class Ship {
-	private String shipClass;
+	private String shipName;
 	private int shipSize;
 	private int startX;
 	private int startY;
 	private int hitCount;
 	private boolean sunk;
 	
-	public Ship(String shipClass, int length){
-		shipClass = this.shipClass;
-		length = this.shipSize;
+	public Ship(String shipName, int length){
+		this.shipName = shipName;
+		this.shipSize = length;
 		startX = 0;
 		startY = 0;
 		sunk = false;
@@ -21,8 +21,8 @@ public class Ship {
 		return shipSize;
 	}
 	
-	public String getShipClass(){
-		return shipClass;
+	public String getShipName(){
+		return shipName;
 	}
 	
 	public boolean getSunk(){
@@ -54,8 +54,9 @@ public class Ship {
 		return hitCount;
 	}
 
+	@Override
 	public String toString(){
-		return getShipClass().substring(1, getShipClass().length()-1);
+		return (getShipName() + " ");
 	}
 
 }
