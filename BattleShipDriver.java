@@ -4,7 +4,10 @@ import java.util.*;
 
 public class BattleShipDriver {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) { // if all inputs are made correctly
+												// (i.e on a spot on the board),
+												// the code will run fine until
+												// line 27
 		Scanner in = new Scanner(System.in);
 		Random rand = new Random();
 		Board playerBoard = new Board(10, 10);
@@ -14,48 +17,50 @@ public class BattleShipDriver {
 		Board opponentBoard = new Board(10, 10);
 		opponentBoard.setBoardName("opponentBoard");
 
-		while (!(playerBoard.getShipList().size() == 0)) {
-			playerBoard.addShip(in);
-		}
+		playerBoard.addShip(in);
 		opponentBoard.noUserAddShip();
 		int choose = rand.nextInt(1);
 
 		switch (choose) {
 		case 0:
 			System.out.println("Player goes first");
+			int turn = 1;
 			while (playerBoard.getNumberSunk() != 5 || opponentBoard.getNumberSunk() != 5) {
-				fire(in, oppPlayerPerspective, opponentBoard);
-				checkSunk(opponentBoard, oppPlayerPerspective);
-				playerBoard.display();
-				oppPlayerPerspective.display();
-				noUserFire(playerBoard);
-				checkSunk(playerBoard, null);
-				playerBoard.display();
-				oppPlayerPerspective.display();
+				if (turn % 2 == 1) {
+					fire(in, playerBoard, oppPlayerPerspective, opponentBoard); 
+					checkSunk(opponentBoard, oppPlayerPerspective);
+					turn += 1;
+				}
+				if (turn % 2 == 0) {
+					noUserFire(playerBoard, oppPlayerPerspective); 
+					checkSunk(playerBoard, null);
+				}
 			}
-			if(playerBoard.getNumberSunk() == 5){
+			if (playerBoard.getNumberSunk() == 5) {
 				System.out.println("You lost!");
-			}
-			else{
+			} 
+			
+			else {
 				System.out.println("Congratulations, you won!");
 			}
 			break;
 		case 1:
 			System.out.println("AI goes first");
+			int tur = 1;
 			while (playerBoard.getNumberSunk() != 5 || opponentBoard.getNumberSunk() != 5) {
-				noUserFire(playerBoard);
-				checkSunk(playerBoard, null);
-				playerBoard.display();
-				oppPlayerPerspective.display();
-				fire(in, oppPlayerPerspective, opponentBoard);
-				checkSunk(opponentBoard, oppPlayerPerspective);
-				playerBoard.display();
-				oppPlayerPerspective.display();
+				if (tur % 2 == 0) {
+					fire(in, playerBoard, oppPlayerPerspective, opponentBoard);
+					checkSunk(opponentBoard, oppPlayerPerspective);
+					tur += 1;
+				}
+				if (tur % 2 == 1) {
+					noUserFire(playerBoard, oppPlayerPerspective);
+					checkSunk(playerBoard, null);
+				}
 			}
-			if(playerBoard.getNumberSunk() == 5){
+			if (playerBoard.getNumberSunk() == 5) {
 				System.out.println("You lost!");
-			}
-			else{
+			} else {
 				System.out.println("Congratulations, you won!");
 			}
 			break;
@@ -63,8 +68,10 @@ public class BattleShipDriver {
 		}
 	}
 
-	public static void fire(Scanner in,  Board display, Board defender) {
+	
 
+	public static void fire(Scanner in, Board attacker, Board display, Board defender) {
+		
 		boolean successful = false;
 		while (!successful) {
 			try {
@@ -80,12 +87,14 @@ public class BattleShipDriver {
 					if (defendCell.getFilled()) {
 						defendCell.setHit(true);
 						displayCell.setHit(true);
+						System.out.println(displayCell.getHit());
 						System.out.println("You've hit an enemy ship!");
 						Ship defendShip = defendCell.getOccupier();
 						defendShip.setHitCount();
 					} else {
 						defendCell.setMiss(true);
 						displayCell.setMiss(true);
+						System.out.println(displayCell.getMiss());
 						System.out.println("You've missed!");
 					}
 					successful = true;
@@ -96,10 +105,13 @@ public class BattleShipDriver {
 				System.out.println("Those coordinates do not exist!");
 			}
 		}
+		attacker.display();
+		display.display();
 	}
 
-	public static void noUserFire(Board defender) {
-
+	public static void noUserFire(Board defender, Board display) { // gets stuck in endless loop, does not work
+		defender.display();
+		display.display();
 		boolean successful = false;
 		while (!successful) {
 			try {
@@ -109,9 +121,10 @@ public class BattleShipDriver {
 						if ((defender.getCell(i, j).getVisited())) {
 							int k = rand.nextInt(3);
 							switch (k) {
+
 							case 0:
 
-								Cell left = defender.getCell(i - 1, j);
+								Cell left = defender.getCell(i, j - 1);
 								if (!left.getFilled()) {
 									left.setVisited(true);
 									if (left.getFilled()) {
@@ -128,7 +141,7 @@ public class BattleShipDriver {
 
 							case 1:
 
-								Cell right = defender.getCell(i + 1, j);
+								Cell right = defender.getCell(i, j + 1);
 								if (!right.getFilled()) {
 									right.setVisited(true);
 									if (right.getFilled()) {
@@ -146,7 +159,7 @@ public class BattleShipDriver {
 
 							case 2:
 
-								Cell up = defender.getCell(i, j + 1);
+								Cell up = defender.getCell(i + 1, j);
 								if (!up.getFilled()) {
 									up.setVisited(true);
 									if (up.getFilled()) {
@@ -164,7 +177,7 @@ public class BattleShipDriver {
 
 							case 3:
 
-								Cell down = defender.getCell(i, j - 1);
+								Cell down = defender.getCell(i - 1, j);
 								if (!down.getFilled()) {
 									down.setVisited(true);
 									if (down.getFilled()) {
@@ -208,23 +221,29 @@ public class BattleShipDriver {
 			} catch (Exception e) {
 			}
 		}
+		defender.display();
+		display.display();
 	}
 
 	public static String checkSunk(Board subject, Board display) {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
 				Ship checkShip = subject.getCell(i, j).getOccupier();
+				if (!(subject.getCell(i, j).getFilled())) {
+					break;
+				}
 				if (!(checkShip.getSunk())) {
 					if (checkShip.getHitCount() == checkShip.getSize()) {
 						checkShip.setSunk(true);
 						switch (subject.getBoardName()) {
+
 						case "playerBoard":
 							System.out.printf("Your ", checkShip.toString(), " has been sunk!", "/n");
 							for (int l = 0; i < 10; i++) {
 								for (int m = 0; j < 10; j++) {
 									if (subject.getCell(l, m).getOccupier() == checkShip) {
 										subject.getCell(l, m).setSunk(true);
-																																																																										}
+									}
 								}
 							}
 						case "opponentBoard":

@@ -58,13 +58,16 @@ package ting.nicholas;
 		public void setMiss(boolean value){
 			miss = value;
 		}
+		public boolean getMiss(){
+			return miss;
+		}
+		public boolean getHit(){
+			return hit;
+		}
 		
 		public String toString(){
-			if(!filled){
-				return "~";
-			}
-			if(filled){
-				return "+";
+			if(sunk){
+				return "!";
 			}
 			if(hit){
 				return "*";
@@ -72,9 +75,28 @@ package ting.nicholas;
 			if(miss){
 				return "#"; 
 			}
-			if(sunk){
-				return "!";
+			if(!filled){
+				return "~";
 			}
+			//if(filled){
+				//return "+";
+			//}
+			switch(occupier.getShipName()){
+			case "Aircraft Carrier":
+				return "A";
+			case "Battleship":
+				return "B";
+			case "Cruiser":
+				return "C";
+			case "Destroyer":
+				return "D";
+			case "Submarine":
+				return "S";
+			
+			}
+			
+			
+			
 			return null;
 		}
 		
